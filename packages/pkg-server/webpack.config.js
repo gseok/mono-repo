@@ -40,16 +40,17 @@ module.exports = (env) => {
                     },
                   ],
                   '@babel/preset-react',
+                  '@babel/preset-typescript'
                 ],
                 plugins: ['@loadable/babel-plugin']
               },
             },
-            {
-              loader: 'ts-loader',
-              options: {
-                configFile: path.resolve(__dirname, './tsconfig.json'),
-              },
-            },
+            // {
+            //   loader: 'ts-loader',
+            //   options: {
+            //     configFile: path.resolve(__dirname, './tsconfig.json'),
+            //   },
+            // },
           ],
         },
       ],
@@ -64,8 +65,8 @@ module.exports = (env) => {
       alias: {
         // There should be only one react and react-dom copy as it causes issue with hooks
         // https://fb.me/react-invalid-hook-call
-        // react: path.resolve(__dirname, '../../node_modules/react'),
-        // 'react-dom': path.resolve(__dirname, '../../node_modules/react-dom'),
+        'react': path.resolve(__dirname, '../../node_modules/react'),
+        'react-dom': path.resolve(__dirname, '../../node_modules/react-dom'),
       },
       extensions: ['.js', 'jsx', '.ts', '.tsx'],
     },

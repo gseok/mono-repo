@@ -5,6 +5,7 @@ const LoadablePlugin = require('@loadable/webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { DefinePlugin } = require('webpack');
 
 const autoprefixer = require('autoprefixer');
 const packageJSON = require('./package.json');
@@ -13,7 +14,7 @@ const rootPath = path.resolve(__dirname, '..', '..');
 const DEFAULT_MODE = 'development';
 const PRODUCTION_MODE = 'production';
 
-const getConfig = (target, env) => {
+const getConfigClient = (target, env) => {
   const pkgName = packageJSON.name
     .split('-')
     .map((key) => `${key.charAt(0).toUpperCase()}${key.substr(1)}`)
@@ -63,16 +64,17 @@ const getConfig = (target, env) => {
                     },
                   ],
                   '@babel/preset-react',
+                  '@babel/preset-typescript'
                 ],
                 plugins: ['@loadable/babel-plugin']
               },
             },
-            {
-              loader: 'ts-loader',
-              options: {
-                configFile: path.resolve(__dirname, './tsconfig.json'),
-              },
-            },
+            // {
+            //   loader: 'ts-loader',
+            //   options: {
+            //     configFile: path.resolve(__dirname, './tsconfig.json'),
+            //   },
+            // },
           ].filter((data) => !!data),
         },
         {
@@ -113,6 +115,12 @@ const getConfig = (target, env) => {
     ],
 
     resolve: {
+      alias: {
+        // There should be only one react and react-dom copy as it causes issue with hooks
+        // https://fb.me/react-invalid-hook-call
+        'react': path.resolve(__dirname, '../../node_modules/react'),
+        'react-dom': path.resolve(__dirname, '../../node_modules/react-dom'),
+      },
       extensions: ['.js', 'jsx', '.ts', '.tsx', '.css', '.scss'],
     },
   };
@@ -133,6 +141,82 @@ const getConfig = (target, env) => {
   };
 };
 
+const getConfigServer = (env) => {
+  return {
+    target: 'node',
+    mode: 'development',
+    devtool: 'source-map',
+    entry: {
+      index: path.resolve(__dirname, '../pkg-server/src/server.ts'),
+    },
+    output: {
+      path: path.resolve(__dirname, `../pkg-server/dist/server`),
+      filename: 'server.js',
+    },
+    node: {
+      __dirname: false,
+    },
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/,
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                presets: [
+                  [
+                    '@babel/preset-env',
+                    {
+                      targets: {
+                        esmodules: true,
+                      },
+                      useBuiltIns: undefined,
+                    },
+                  ],
+                  '@babel/preset-react',
+                  '@babel/preset-typescript'
+                ],
+                plugins: ['@loadable/babel-plugin']
+              },
+            },
+            // {
+            //   loader: 'ts-loader',
+            //   options: {
+            //     configFile: path.resolve(__dirname, './tsconfig.json'),
+            //   },
+            // },
+          ],
+        },
+      ],
+    },
+    plugins: [
+      new CleanWebpackPlugin(),
+      new DefinePlugin({
+        'global.__BUILD_DATE__': JSON.stringify(new Date().toISOString()),
+      }),
+    ],
+    resolve: {
+      alias: {
+        // There should be only one react and react-dom copy as it causes issue with hooks
+        // https://fb.me/react-invalid-hook-call
+        'react': path.resolve(__dirname, '../../node_modules/react'),
+        'react-dom': path.resolve(__dirname, '../../node_modules/react-dom'),
+      },
+      extensions: ['.js', 'jsx', '.ts', '.tsx'],
+    },
+    externals: [
+      // 'react',
+      // 'react-dom',
+      // nodeExternals(),
+    ],
+  };
+}
+
 module.exports = (env) => {
-  return [getConfig('web', env), getConfig('node', env)];
+  return [
+    getConfigClient('web', env),
+    getConfigClient('node', env),
+    getConfigServer(env)
+  ];
 };

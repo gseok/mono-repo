@@ -61,9 +61,17 @@ module.exports = (env) => {
       }),
     ],
     resolve: {
+      alias: {
+        // There should be only one react and react-dom copy as it causes issue with hooks
+        // https://fb.me/react-invalid-hook-call
+        // react: path.resolve(__dirname, '../../node_modules/react'),
+        // 'react-dom': path.resolve(__dirname, '../../node_modules/react-dom'),
+      },
       extensions: ['.js', 'jsx', '.ts', '.tsx'],
     },
     externals: [
+      // 'react',
+      // 'react-dom',
       nodeExternals(),
       nodeExternals({
         modulesDir: path.resolve(__dirname, '../../node_modules'),

@@ -10,6 +10,8 @@ import { Provider } from 'react-redux';
 import logger from '../helpers/logger';
 import appReducer from '../../../shared/reducers/reducers';
 
+// const ReactDOMServer = require(path.resolve(__dirname, '../../../../node_modules', 'react-dom', 'server'));
+
 const ssr: Middleware = async (ctx: Context) => {
   const nodeStats = path.resolve(__dirname, '../../../../dist/pkg-client/node/loadable-stats.json');
   const webStats = path.resolve(__dirname, '../../../../dist/pkg-client/web/loadable-stats.json');
@@ -25,7 +27,7 @@ const ssr: Middleware = async (ctx: Context) => {
       number: 3131
     }
   });
-  const jsx = webExtractor.collectChunks(
+  const jsx = nodeExtractor.collectChunks(
     <Provider store={store}>
       <App />
     </Provider>

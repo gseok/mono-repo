@@ -15,8 +15,8 @@ module.exports = (env) => {
       index: path.resolve(__dirname, './src/server.ts'),
     },
     output: {
-      path: path.resolve(__dirname, `./dist`),
-      filename: '[name].js',
+      path: path.resolve(__dirname, `./dist/server`),
+      filename: 'server.js',
     },
     node: {
       __dirname: false,

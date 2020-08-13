@@ -64,6 +64,7 @@ const getConfig = (target, env) => {
                   ],
                   '@babel/preset-react',
                 ],
+                plugins: ['@loadable/babel-plugin']
               },
             },
             {

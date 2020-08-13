@@ -41,6 +41,7 @@ module.exports = (env) => {
                   ],
                   '@babel/preset-react',
                 ],
+                plugins: ['@loadable/babel-plugin']
               },
             },
             {

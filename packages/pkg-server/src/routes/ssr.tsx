@@ -5,7 +5,10 @@ import { Middleware, Context } from 'koa';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { ChunkExtractor } from '@loadable/server';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
 import logger from '../helpers/logger';
+import appReducer from '../../../shared/reducers/reducers';
 
 const ssr: Middleware = async (ctx: Context) => {
   const nodeStats = path.resolve(__dirname, '../../../../dist/pkg-client/node/loadable-stats.json');
@@ -17,7 +20,16 @@ const ssr: Middleware = async (ctx: Context) => {
   // redux for ssr
   logger.debug('Server Side Init Data: ', ctx.state);
 
-  const jsx = webExtractor.collectChunks(<App />);
+  const store = createStore(appReducer, {
+    Sample1Reducer: {
+      number: 3131
+    }
+  });
+  const jsx = webExtractor.collectChunks(
+    <Provider store={store}>
+      <App />
+    </Provider>
+  );
 
   logger.logs('SSR > string...!!!!!');
   const html = renderToString(jsx);

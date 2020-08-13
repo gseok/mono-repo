@@ -117,13 +117,6 @@ const getConfig = (target, env) => {
     },
   };
 
-  if (target === 'node') {
-    base.externals = [
-      'react',
-      'react-dom',
-    ];
-  }
-
   return {
     ...base,
     devServer: {

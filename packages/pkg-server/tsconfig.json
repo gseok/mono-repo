@@ -5,6 +5,10 @@
     "baseUrl": "./",
     "typeRoots" : [
       "./src/@types"
-    ]
+    ],
+    "paths": {
+      "react": ["../../node_modules/react"],
+      "reacr-dom": ["../../node_modules/react-dom"],
+    }
   }
 }

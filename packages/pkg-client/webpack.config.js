@@ -13,7 +13,7 @@ const rootPath = path.resolve(__dirname, '..', '..');
 const DEFAULT_MODE = 'development';
 const PRODUCTION_MODE = 'production';
 
-module.exports = (env) => {
+const getConfig = (target, env) => {
   const pkgName = packageJSON.name
     .split('-')
     .map((key) => `${key.charAt(0).toUpperCase()}${key.substr(1)}`)
@@ -21,11 +21,12 @@ module.exports = (env) => {
   const pkgVersion = packageJSON.version;
   const outputFileName = `${pkgName}_${pkgVersion}.js`;
   const outputStyleFileName = `${pkgName}_${pkgVersion}.css`;
-  const clientEntry = path.resolve(__dirname, `./src/index.tsx`);
+  const clientEntry =
+    target === 'node' ? [path.resolve(__dirname, './src/App.tsx')] : [path.resolve(__dirname, `./src/index.tsx`)];
 
   const base = {
-    target: 'web',
-    name: 'web',
+    target,
+    name: target,
 
     mode: DEFAULT_MODE,
     devtool: 'source-map',
@@ -35,9 +36,10 @@ module.exports = (env) => {
 
     entry: clientEntry,
     output: {
-      path: path.resolve(rootPath, `dist/${packageJSON.name}`),
+      path: path.resolve(rootPath, `dist/${packageJSON.name}`, target),
       publicPath: '/',
       filename: outputFileName,
+      libraryTarget: target === 'node' ? 'commonjs2' : undefined,
     },
 
     module: {
@@ -129,4 +131,8 @@ module.exports = (env) => {
       historyApiFallback: true,
     },
   };
+};
+
+module.exports = (env) => {
+  return [getConfig('web', env), getConfig('node', env)];
 };

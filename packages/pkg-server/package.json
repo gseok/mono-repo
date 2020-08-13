@@ -5,12 +5,9 @@
   "scripts": {
     "start:local": "ts-node-dev --watch --inspect=127.0.0.1:9331 ./src/server.ts"
   },
-  "devDependencies": {
-    "@babel/core": "^7.11.1",
-    "typescript": "^3.9.7"
-  },
   "dependencies": {
     "@koa/cors": "^3.1.0",
+    "@loadable/server": "^5.13.1",
     "@types/express-to-koa": "^1.0.0",
     "@types/koa": "^2.11.3",
     "@types/koa-router": "^7.4.1",
@@ -23,5 +20,14 @@
     "swagger-stats": "^0.95.17",
     "ts-node-dev": "^1.0.0-pre.56",
     "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/preset-react": "^7.10.4",
+    "@babel/preset-typescript": "^7.10.4",
+    "@loadable/babel-plugin": "^5.13.0",
+    "@loadable/webpack-plugin": "^5.13.0",
+    "typescript": "^3.9.7"
   }
 }

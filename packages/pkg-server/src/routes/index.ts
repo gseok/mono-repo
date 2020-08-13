@@ -1,19 +1,21 @@
-import { Context } from 'koa';
+import { Context, Next } from 'koa';
 import Router from 'koa-router';
+
+import SSRRoute from './ssr';
 
 const router = new Router();
 
 router.get(
   '/',
-  async (ctx: Context) => {
+  async (ctx: Context, next: Next) => {
     const { ssr } = ctx.request.query;
 
-    if (ssr) {
-      ctx.body = 'ssr @@@';
+    if (!ssr) {
+      ctx.body = 'No SSR, ?ssr=true needed..!!';
       return;
     }
-
-    ctx.body = 'No SSR, ?ssr=true needed..!!';
+    next();
   },
+  SSRRoute
 );
 export default router;

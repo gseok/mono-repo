@@ -5,18 +5,12 @@ const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const { DefinePlugin } = require('webpack');
-const DotEnvPlugin = require('dotenv-webpack');
-const dotEnv = require('dotenv').config();
 
 module.exports = (env) => {
-  const { NODE_ENV, GENERATE_SOURCEMAP, PHASE } = {
-    ...dotEnv.parsed,
-    ...env,
-  };
   return {
     target: 'node',
-    mode: NODE_ENV || 'development',
-    devtool: GENERATE_SOURCEMAP || '',
+    mode: 'development',
+    devtool: 'source-map',
     entry: {
       index: path.resolve(__dirname, './src/server.ts'),
     },
@@ -55,22 +49,11 @@ module.exports = (env) => {
                 configFile: path.resolve(__dirname, './tsconfig.json'),
               },
             },
-            {
-              loader: 'webpack-strip-block',
-              options:
-                PHASE === 'real'
-                  ? {
-                      start: 'develblock:start',
-                      end: 'develblock:end',
-                    }
-                  : {},
-            },
           ],
         },
       ],
     },
     plugins: [
-      new DotEnvPlugin(),
       new CleanWebpackPlugin(),
       new DefinePlugin({
         'global.__BUILD_DATE__': JSON.stringify(new Date().toISOString()),

@@ -1,9 +1,11 @@
 import React from 'react';
+import NumberView from './NumberView';
 
 const App = () => {
   return (
     <div>
-      Mono Repo SSR with React, Redux Test...
+      <div>Mono Repo SSR with React, Redux Test...</div>
+      <NumberView />
     </div>
   );
 };
